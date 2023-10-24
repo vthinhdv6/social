@@ -8,7 +8,7 @@ void main() {
 }
 
 class ChatScreen extends StatefulWidget {
-  @overridesssssss
+  @overridefus
   ChatScreenState createState() => ChatScreenState();
 }
 
