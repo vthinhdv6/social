@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:social/presentation/screen/video_social_screen/video_social_screen.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: ChatScreen(),
+    home: Home(),
   ),
   );
 }
 
 class ChatScreen extends StatefulWidget {
-  @overridefus
+  @override
   ChatScreenState createState() => ChatScreenState();
 }
 
@@ -56,7 +57,7 @@ class ChatScreenState extends State<ChatScreen> {
 
   Widget _buildTextComposer() {
     return IconTheme(
-      data: IconThemeData(color: Theme.of(context).accentColor),
+      data: IconThemeData(color: Theme.of(context).canvasColor),
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 8.0),
         child: Row(
