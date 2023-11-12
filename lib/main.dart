@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:social/presentation/screen/upload_video.screen.dart/upload_video_screen.dart';
 import 'package:social/presentation/screen/video_social_screen/video_social_screen.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: Home(),
+    home: UpLoadVideoScreen(),
   ),
   );
 }
