@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:social/common/constant/contant.dart';
+import 'package:social/presentation/screen/video_social_screen/enitiesHome.dart';
 
 
 class ActionsToolbar extends StatelessWidget {
@@ -19,13 +20,37 @@ class ActionsToolbar extends StatelessWidget {
 // The size of the plus icon under the profile image in follow action
   static const double PlusIconSize = 20.0;
 
+  int numberLike = 0;
+  final _numberStream = enitiesHome();
+
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 100.0,
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         _getFollowAction(),
-        _getSocialAction(icon: Icons.heart_broken, title: '3.2m'),
+        StreamBuilder<int>(
+            stream: _numberStream.numberStream,
+            builder:(context,snapshot)
+            {
+              if (snapshot.data== 0) {
+                return GestureDetector(
+                  onTap: () {
+                    _handleTap();
+                  },
+                  child: _getSocialAction(title: snapshot.data.toString(), icon: Icons.heart_broken),
+
+                );
+              } else {
+                return GestureDetector(
+                  onTap: () {
+                    _handleTap();
+                  },
+                  child: _getSocialAction(title: snapshot.data.toString(),  icon: Icons.heart_broken, colorIcon: Colors.redAccent),
+
+                );
+              }
+            }),
         _getSocialAction(icon:Icons.chat_bubble, title: '16.4k'),
         _getSocialAction(icon: Icons.replay, title: 'Share', isShare: true),
         _getMusicPlayerAction()
@@ -33,13 +58,13 @@ class ActionsToolbar extends StatelessWidget {
     );
   }
 
-  Widget _getSocialAction({ String? title, IconData? icon, bool isShare = false}) {
+  Widget _getSocialAction({ String? title, IconData? icon, bool isShare = false, Color? colorIcon}) {
     return Container(
         margin: EdgeInsets.only(top: 15.0),
         width: 60.0,
         height: 60.0,
         child: Column(children: [
-          Icon(icon, size: isShare ? 25.0 : 35.0, color: Colors.grey[300]),
+          Icon(icon, size: isShare ? 25.0 : 35.0, color: colorIcon??Colors.grey,),
           Padding(
             padding: EdgeInsets.only(top: isShare ? 5.0 : 2.0),
             child:
@@ -124,5 +149,14 @@ class ActionsToolbar extends StatelessWidget {
           ),
 
         ]));
+  }
+  Future<int> changeLikeNumber() async {
+    return numberLike;
+  }
+  Future<void> changeLikeNumberFuture() async {
+    numberLike++;
+  }
+  void _handleTap() {
+    _numberStream.incrementNumber();
   }
 }

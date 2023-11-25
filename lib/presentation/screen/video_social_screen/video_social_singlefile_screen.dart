@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-
+import 'package:social/presentation/screen/video_social_screen/enitiesHome.dart';
 
 import '../../../common/constant/contant.dart';
 
@@ -15,25 +15,28 @@ class VideoSocialSingleFile extends StatelessWidget {
   static const double CreateButtonWidth = 38.0;
   static const primaryColor = Color(0xFF333333);
   static const secondaryColor = Color(0xFF999999);
+
+  VideoSocialSingleFile({super.key, required this.numberLike});
+  int numberLike;
+  final _numberStream = enitiesHome();
   Widget get followingContainer => Container(
-    height: 100.0,
-    padding: EdgeInsets.only(bottom: 15.0),
-    alignment: Alignment(0.0, 1.0),
-    child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Text('Following'),
-          Container(
-            width: 15.0,
-          ),
-          Text('For you',
-              style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold))
-        ]),
-  );
+        height: 100.0,
+        padding: EdgeInsets.only(bottom: 15.0),
+        alignment: Alignment(0.0, 1.0),
+        child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text('Following'),
+              Container(
+                width: 15.0,
+              ),
+              Text('For you', style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold))
+            ]),
+      );
 
   Widget get videoDescription => Expanded(
-      child: Padding(
+          child: Padding(
         padding: const EdgeInsets.only(left: 20.0),
         child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -68,19 +71,37 @@ class VideoSocialSingleFile extends StatelessWidget {
       ));
 
   Widget get actionsToolbar => Container(
-    width: 100.0,
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        _getProfileVideoAction(pictureUrl: ''),
-        _getVideoAction(title: '3.2m', icon: Contants.heart),
-        _getVideoAction(title: '16.4k', icon: Contants.chat_bubble),
-        _getVideoAction(
-            title: 'Share', icon: Contants.reply, isShare: true),
-        _getMusicPlayerAction()
-      ],
-    ),
-  );
+        width: 100.0,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            _getProfileVideoAction(pictureUrl: ''),
+            StreamBuilder<int>(
+              stream: _numberStream.numberStream,
+                builder:(context,snapshot)
+             {
+                  if (!snapshot.hasData) {
+                    return CircularProgressIndicator();
+                  } else {
+                    return GestureDetector(
+                      onTap: () {
+                        _handleTap();
+                      },
+                      child: _getVideoAction(title: snapshot.data.toString(), icon: Icons.heart_broken),
+
+                    );
+                  }
+                }),
+            //     child: GestureDetector(
+            //   child: _getVideoAction(title: numberLike.toString(), icon: Contants.heart),
+            //   onTap: () {},
+            // )),
+            // _getVideoAction(title: '16.4k', icon: Contants.chat_bubble),
+            _getVideoAction(title: 'asdasd', icon: Contants.reply, isShare: true),
+            _getMusicPlayerAction()
+          ],
+        ),
+      );
 
   LinearGradient musicGradient = LinearGradient(
     colors: [primaryColor, secondaryColor, secondaryColor, primaryColor],
@@ -100,11 +121,9 @@ class VideoSocialSingleFile extends StatelessWidget {
             height: ProfileImageSize,
             width: ProfileImageSize,
             decoration: BoxDecoration(
-                gradient: musicGradient,
-                borderRadius: BorderRadius.circular(ProfileImageSize / 2)),
+                gradient: musicGradient, borderRadius: BorderRadius.circular(ProfileImageSize / 2)),
             child: CachedNetworkImage(
-              imageUrl:
-              "https://secure.gravatar.com/avatar/ef4a9338dca42372f15427cdb4595ef7",
+              imageUrl: "https://secure.gravatar.com/avatar/ef4a9338dca42372f15427cdb4595ef7",
               placeholder: (context, url) => new CircularProgressIndicator(),
               errorWidget: (context, url, error) => new Icon(Icons.error),
             ),
@@ -136,15 +155,14 @@ class VideoSocialSingleFile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(7.0))),
         Center(
             child: Container(
-              height: double.infinity,
-              width: CreateButtonWidth,
-              decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(7.0)),
-              child: Icon(
-                Icons.add,
-                size: 20.0,
-              ),
-            )),
+          height: double.infinity,
+          width: CreateButtonWidth,
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(7.0)),
+          child: Icon(
+            Icons.add,
+            size: 20.0,
+          ),
+        )),
       ]));
 
   Widget get navigationBar => Padding(
@@ -153,13 +171,10 @@ class VideoSocialSingleFile extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Icon(Contants.home, color: Colors.white, size: NavigationIconSize),
-          Icon(Contants.search,
-              color: Colors.white, size: NavigationIconSize),
+          Icon(Contants.search, color: Colors.white, size: NavigationIconSize),
           customCreateIcon,
-          Icon(Contants.messages,
-              color: Colors.white, size: NavigationIconSize),
-          Icon(Contants.profile,
-              color: Colors.white, size: NavigationIconSize)
+          Icon(Contants.messages, color: Colors.white, size: NavigationIconSize),
+          Icon(Contants.profile, color: Colors.white, size: NavigationIconSize)
         ],
       ));
 
@@ -172,9 +187,7 @@ class VideoSocialSingleFile extends StatelessWidget {
           children: <Widget>[
             followingContainer,
             centerSection,
-            Opacity(
-                opacity: 0.1,
-                child: Container(height: 1.0, color: Colors.grey[300])),
+            Opacity(opacity: 0.1, child: Container(height: 1.0, color: Colors.grey[300])),
             navigationBar,
           ],
         ),
@@ -188,13 +201,10 @@ class VideoSocialSingleFile extends StatelessWidget {
         width: ActionWidgetSize,
         height: ActionWidgetSize,
         child: Column(children: [
-          Icon(icon,
-              size: isShare ? ShareActionIconSize : ActionIconSize,
-              color: Colors.grey[300]),
+          Icon(icon, size: isShare ? ShareActionIconSize : ActionIconSize, color: Colors.grey[300]),
           Padding(
             padding: EdgeInsets.only(top: isShare ? 5.0 : 2.0),
-            child:
-            Text(title, style: TextStyle(fontSize: isShare ? 10.0 : 12.0)),
+            child: Text(title, style: TextStyle(fontSize: isShare ? 10.0 : 12.0)),
           )
         ]));
   }
@@ -211,11 +221,9 @@ class VideoSocialSingleFile extends StatelessWidget {
               height: ProfileImageSize,
               width: ProfileImageSize,
               decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(ProfileImageSize / 2)),
+                  color: Colors.white, borderRadius: BorderRadius.circular(ProfileImageSize / 2)),
               child: CachedNetworkImage(
-                imageUrl:
-                "https://secure.gravatar.com/avatar/ef4a9338dca42372f15427cdb4595ef7",
+                imageUrl: "https://secure.gravatar.com/avatar/ef4a9338dca42372f15427cdb4595ef7",
                 placeholder: (context, url) => new CircularProgressIndicator(),
                 errorWidget: (context, url, error) => new Icon(Icons.error),
               ),
@@ -227,15 +235,24 @@ class VideoSocialSingleFile extends StatelessWidget {
           bottom: 5,
           left: ((ActionWidgetSize / 2) - (15 / 2)),
           child: Container(
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(15.0)),
+            decoration:
+                BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15.0)),
           )),
       Positioned(
           bottom: 0,
           left: ((ActionWidgetSize / 2) - (FollowActionIconSize / 2)),
           child: Icon(Icons.add_circle,
-              color: Color.fromARGB(255, 255, 43, 84),
-              size: FollowActionIconSize))
+              color: Color.fromARGB(255, 255, 43, 84), size: FollowActionIconSize))
     ]);
+  }
+
+  Future<int> changeLikeNumber() async {
+    return numberLike;
+  }
+  Future<void> changeLikeNumberFuture() async {
+    numberLike++;
+  }
+  void _handleTap() {
+    _numberStream.incrementNumber();
   }
 }
